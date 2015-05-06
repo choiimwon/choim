@@ -10,11 +10,11 @@ using namespace std;
 void InitGraph(vector<Node*> & nodes)
 {
 	int index;
-	for(int i=0;i<1000;i++){		
+	for(int i=0;i<100;i++){		
 		Node * node = new Node(i+1);
 		nodes.push_back(node);	
 	}
-	for(int j=0;j<1000;j++)
+	for(int j=0;j<100;j++)
 	{
 		index = rand()%nodes.size();
 		Node * target = nodes.at(index);
@@ -36,7 +36,6 @@ int main(int argc, const char* argv[]){
 	vector<Node*> nodes;
 	InitGraph(nodes);
    PageRank pr;
-	int num = nodes.size();	
 	// culating pagerank 5 times
 	while((n=s4_pageread(0,S4_NUM_BUFFERS,ifp))>0)
 	{

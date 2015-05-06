@@ -11,9 +11,9 @@ ARMC = arm-linux-gnueabihf-gcc
 ARMCC = arm-linux-gnueabihf-g++
 ARMFLAGS = -march=armv7-a -marm
 
-all : SpageRank Executable s4lib.o main_isp.o PageRank_par.o PageRank.o STpageRank main_par_isp.o Executable2
+all : SpageRank Executable s4lib.o main_isp.o PageRank_par.o PageRank.o SpageRank_par main_par_isp.o Executable2
 
-STpageRank: SpageRank.c ${S4SIM_HOME}/src/isp_socket.c
+SpageRank_par: SpageRank.c ${S4SIM_HOME}/src/isp_socket.c
 	$(CC) $(CFLAGS) -static -o $@ $^ -lpthread $(INCLUDE)
 SpageRank: SpageRank.c ${S4SIM_HOME}/src/isp_socket.c
 	$(CC) $(CFLAGS) -static -o $@ $^ -lpthread $(INCLUDE)
@@ -32,5 +32,5 @@ main_isp.o: main.hpp main_isp.cpp
 PageRank_par.o: PageRank_par.h PageRank_par.cpp
 	$(ARMCC) ${ARMFLAGS} -static -c PageRank_par.cpp
 clean:
-	rm -rf  SpageRank STpageRank main_par_isp main_par_isp.o PageRank_par.o s4lib.o	main_isp.o PageRank.o main_isp
+	rm -rf  SpageRank SpageRank_par main_par_isp main_par_isp.o PageRank_par.o s4lib.o	main_isp.o PageRank.o main_isp
 

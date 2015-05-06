@@ -77,17 +77,14 @@ private:
     set<Node*> linkout_nodes_;
     double page_rank_;
 };
+
 class PageRank
 {
 public:
-	typedef struct CalArgument{
-	vector <Node*> nodes;
-	int n;
-}Elements;
     PageRank(double q=0.85);
     ~PageRank(void);
-    Elements Calc(void *theArg);  
+    void Calc(vector<Node*> & nodes,int n);
     void PrintPageRank(vector<Node*> & nodes);
 private:
-	double q_;
+    double q_;
 };

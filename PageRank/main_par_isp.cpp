@@ -2,12 +2,14 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "PageRank_par.h"
+#include "PageRank.h"
 #include "main.hpp"
 #include "cstdlib"
-#include "pthread.h"
 using namespace std;
-
+struct CalArgument{
+	vector <Node*> nodes;
+	int n;
+};
 void InitGraph(vector<Node*> & nodes)
 {
 	int index;
@@ -23,38 +25,42 @@ void InitGraph(vector<Node*> & nodes)
 		target2->InsertLinkdInNode(target);
 	}
 }
-
-void *Run(void *arg)
+void *Calc(void* theArg)
 {
 	PageRank pr;
-	PageRank::Elements elm = pr.Calc(arg);
-	
-	return arg;
+	struct CalArgument* arg = (struct CalArgument*)theArg;
+	pr.Calc(arg->nodes,arg->n);
+	pr.PrintPageRank(arg->nodes);
 }
+
 int main(int argc, const char* argv[]){
 	FILE * ifp;   
 	int n;
   
 	extern void s4_init_simulation();
-	pthread_t p_thread[S4_NUM_BUFFERS];
-	pthread_attr_t attr;
-	PageRank::Elements arg[S4_NUM_BUFFERS];
-	ifp = s4_fopen(argv[1],"r"); 
 	
+	ifp = s4_fopen(argv[1],"r"); 
+	pthread_t p_thread[S4_NUM_BUFFERS];
+	struct CalArgument arg[S4_NUM_BUFFERS];
+	//create node
 	vector<Node*> nodes;
 	InitGraph(nodes);
    PageRank pr;
-	int num = 40;	
+	// culating pagerank 5 times
 	while((n=s4_pageread(0,S4_NUM_BUFFERS,ifp))>0)
 	{
 		for(int i=0;i<n;i++)
 		{
 			arg[i].nodes = nodes;
-			arg[i].n = num;
-			pthread_create(&p_thread[i], NULL, Run, (void *)&arg[i]);
+			arg[i].n = 40;
+			pthread_create(&p_thread[i], NULL, Calc, (void *)&arg[i]);		
 		}
+		for(int i=0;i<n;i++)
+		{
+			pthread_join(p_thread[i],NULL);
+		}
+	
 	}
-	pr.PrintPageRank(nodes);
 	extern void s4_wrapup_simulation();
 
 	return 0;
